@@ -3,8 +3,10 @@ const User = require('./users.model');
 exports.createUser = async (req, res) => {
     try {
         const user = new User(req.body)
+        console.log(user)
         //save to db
         const savedUser = await user.save();
+        console.log(savedUser)
         res.status(200).send({
             user: savedUser,
             message: 'User created in database.'
