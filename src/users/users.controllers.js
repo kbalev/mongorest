@@ -6,9 +6,11 @@ exports.createUser = async (req, res) => {
         console.log(user)
         //save to db
         const savedUser = await user.save();
+        const token =  await user.generateAuthToken(user._id)
         console.log(savedUser)
         res.status(200).send({
             user: savedUser,
+            token: token,
             message: 'User created in database.'
         })
     } catch (error) {
@@ -31,10 +33,13 @@ exports.findUser = async (req, res) => {
     try {
         const user = req.params.username
         const targetUser = await User.findOne({
-            username: user
+            username: user,
+            password: req.body.password
         })
+        const token = await targetUser.generateAuthToken(targetUser._id)
         res.status(200).send({
-            user: targetUser
+            user: targetUser,
+            token: token
         })
     } catch (error) {
         res.status(500).send(error)
@@ -89,3 +94,7 @@ exports.deleteUser = async (req, res) => {
 
     }
 }
+
+exports.authUser = async (req, res) => {
+    res.status(200).send(req.user)
+} 
